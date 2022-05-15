@@ -38,13 +38,17 @@ function Map:getTilesetByUid(uid)
             return v
         end
     end
+
+    error("Can't find tileset "..uid)
 end
 
 function Map:__loadTilesets(tilesetData)
     self.tilesets = self.tilesets or {}
 
     for _, v in ipairs(tilesetData) do
-        table.insert(self.tilesets, Tileset(v))
+        if v.relPath then
+            table.insert(self.tilesets, Tileset(v))
+        end
     end
 end
 
