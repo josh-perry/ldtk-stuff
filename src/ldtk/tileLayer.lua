@@ -26,12 +26,12 @@ function TileLayer.new(layerData, map)
     return m
 end
 
-function TileLayer:draw()
+function TileLayer:draw(offsetX, offsetY)
     for x = 1, self.tilesX + 1 do
         for y = 1, self.tilesY + 1 do
             if self.tiles[x] and self.tiles[x][y] then
                 local quad = self:__getQuad(self.tiles[x][y])
-                love.graphics.draw(self.tileset.image, quad, x*self.gridSize, y*self.gridSize)
+                love.graphics.draw(self.tileset.image, quad, (x*self.gridSize)+offsetX, (y*self.gridSize)+offsetY)
             end
         end
     end

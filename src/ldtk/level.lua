@@ -13,6 +13,10 @@ function Level.new(levelData, map)
 
     m.data = levelData
     m.map = map
+
+    m.worldX = levelData.worldX
+    m.worldY = levelData.worldY
+
     m:__loadLayers()
 
     return m
@@ -20,7 +24,7 @@ end
 
 function Level:draw()
     for i, v in ipairs(self.layers) do
-        v:draw()
+        v:draw(self.worldX, self.worldY)
     end
 end
 
