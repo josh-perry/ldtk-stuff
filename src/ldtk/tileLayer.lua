@@ -15,7 +15,18 @@ function TileLayer.new(layerData, map)
     m.map = map
     m.tilesetUid = layerData.__tilesetDefUid
     m.gridSize = layerData.__gridSize
-    m.gridTiles = layerData.gridTiles
+
+    m.type = layerData.__type
+
+    if m.type == "TileLayer" then
+        m.tileContainer = layerData.gridTiles
+    elseif m.type == "AutoLayer" then
+        m.tileContainer = layerData.autoLayerTiles
+    elseif m.type == "IntGrid" then
+        m.tileContainer = layerData.autoLayerTiles
+    else
+        --error("Can't find tile container")
+    end
 
     m.tileset = m.map:getTilesetByUid(m.tilesetUid)
     m.tilesX = m.data.__cWid + 1
@@ -48,15 +59,19 @@ function TileLayer:__loadGridTiles()
         end
     end
 
-    for i, v in ipairs(self.gridTiles) do
+    if not self.tileContainer then
+        return
+    end
+
+    for i, v in ipairs(self.tileContainer) do
         -- TODO: load the quad better
         local tile = {
             srcX = v.src[1],
             srcY = v.src[2]
         }
 
-        local tileX = v.px[1] / self.gridSize
-        local tileY = v.px[2] / self.gridSize
+        local tileX = math.floor((v.px[1] / self.gridSize)) + 1
+        local tileY = math.floor((v.px[2] / self.gridSize)) + 1
 
         self.tiles[tileX][tileY] = tile
     end
