@@ -1,7 +1,6 @@
 local ldtk = require("ldtk")
 local map
 
-local mx, my = 0, 0
 local scrollX, scrollY = 0, 0
 
 function love.load()
