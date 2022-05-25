@@ -5,7 +5,7 @@ local mx, my = 0, 0
 local scrollX, scrollY = 0, 0
 
 function love.load()
-    map = ldtk.map("test.ldtk")
+    map = ldtk.map("examples/grassy.ldtk")
 end
 
 function love.draw()
