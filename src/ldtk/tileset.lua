@@ -6,11 +6,11 @@ Tileset.__mt = {
     __index = Tileset
 }
 
-function Tileset.new(tilesetData)
+function Tileset.new(tilesetData, relativePath)
     local m = setmetatable({}, Tileset.__mt)
 
     m.data = tilesetData
-    m.image = love.graphics.newImage(m.data.relPath)
+    m.image = love.graphics.newImage(relativePath..m.data.relPath)
     m.uid = m.data.uid
     m.width, m.height = m.image:getDimensions()
 

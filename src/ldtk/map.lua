@@ -17,6 +17,7 @@ function Map.new(mapFile)
     end
 
     local jsonData = json.decode(love.filesystem.read(mapFile))
+    m.relativePath = mapFile:match("(.*[/\\])") or ""
     m:__loadTilesets(jsonData.defs.tilesets)
     m:__loadLevels(jsonData.levels)
 
@@ -47,7 +48,7 @@ function Map:__loadTilesets(tilesetData)
 
     for _, v in ipairs(tilesetData) do
         if v.relPath then
-            table.insert(self.tilesets, Tileset(v))
+            table.insert(self.tilesets, Tileset(v, self.relativePath))
         end
     end
 end
