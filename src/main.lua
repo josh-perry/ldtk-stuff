@@ -32,6 +32,7 @@ function love.draw()
         end
 
         level:draw()
+        love.graphics.printf(level.identifier, level.worldX, level.worldY, level.width, "center")
         love.graphics.rectangle("line", level.worldX, level.worldY, level.width, level.height)
     end
 
