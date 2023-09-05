@@ -29,7 +29,8 @@ function Level.new(levelData, map)
 end
 
 function Level:draw()
-    for i, v in ipairs(self.layers) do
+    for i = #self.layers, 1, -1 do
+        local v = self.layers[i]
         v:draw(self.worldX, self.worldY)
     end
 end
