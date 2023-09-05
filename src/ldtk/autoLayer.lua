@@ -31,7 +31,7 @@ function AutoLayer:draw(offsetX, offsetY)
         for y = 1, self.tilesY + 1 do
             if self.tiles[x] and self.tiles[x][y] then
                 local quad = self:__getQuad(self.tiles[x][y])
-                love.graphics.draw(self.tileset.image, quad, (x*self.gridSize)+offsetX, (y*self.gridSize)+offsetY)
+                love.graphics.draw(self.tileset.image, quad, ((x-1)*self.gridSize)+offsetX, ((y-1)*self.gridSize)+offsetY)
             end
         end
     end
