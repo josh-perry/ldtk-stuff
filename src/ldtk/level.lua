@@ -2,6 +2,7 @@ local PATH = (...):gsub("%.[^%.]+$", "")
 local json = require(PATH..".lib.json")
 
 local TileLayer = require(PATH..".tileLayer")
+local EntityLayer = require(PATH..".entityLayer")
 
 local Level = {}
 Level.__mt = {
@@ -45,6 +46,8 @@ function Level:__loadLayers()
             table.insert(self.layers, TileLayer(v, self.map))
         elseif v.__type == "IntGrid" then
             table.insert(self.layers, TileLayer(v, self.map))
+        elseif v.__type == "Entities" then
+            table.insert(self.layers, EntityLayer(v, self.map))
         else
             print("Unsupported layer type '"..v.__type.."'!")
         end
