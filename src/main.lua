@@ -2,6 +2,7 @@ local ldtk = require("ldtk")
 local map
 
 local scrollX, scrollY = 0, 0
+local worldDepth = 0
 
 local function aabb(x1, y1, w1, h1, x2, y2, w2, h2)
     return x1 < x2 + w2 and
@@ -22,6 +23,7 @@ function love.draw()
     local cameraX, cameraY, cameraW, cameraH = -scrollX + margin, -scrollY + margin, love.graphics.getWidth() - margin*2, love.graphics.getHeight() - margin*2
 
     for _, level in ipairs(map.levels) do
+        if level.worldDepth == worldDepth then
         local x, y, w, h = cameraX, cameraY, cameraW, cameraH
         local x2, y2, w2, h2 = level.worldX, level.worldY, level.width, level.height
 
@@ -34,6 +36,7 @@ function love.draw()
         level:draw()
         love.graphics.printf(level.identifier, level.worldX, level.worldY, level.width, "center")
         love.graphics.rectangle("line", level.worldX, level.worldY, level.width, level.height)
+    end
     end
 
     love.graphics.setLineWidth(6)
@@ -49,6 +52,10 @@ end
 function love.keypressed(key, scancode)
     if scancode == "escape" then
         love.event.quit()
+    elseif scancode == "pageup" then
+        worldDepth = math.min(worldDepth + 1, map.maxWorldDepth)
+    elseif scancode == "pagedown" then
+        worldDepth = math.max(worldDepth - 1, map.minWorldDepth)
     end
 end
 
