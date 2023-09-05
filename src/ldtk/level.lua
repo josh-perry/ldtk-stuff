@@ -17,6 +17,9 @@ function Level.new(levelData, map)
     m.worldX = levelData.worldX
     m.worldY = levelData.worldY
 
+    m.width = m.data.pxWid
+    m.height = m.data.pxHei
+
     m:__loadLayers()
 
     return m
