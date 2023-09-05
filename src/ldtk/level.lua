@@ -20,6 +20,8 @@ function Level.new(levelData, map)
     m.width = m.data.pxWid
     m.height = m.data.pxHei
 
+    m.identifier = m.data.identifier
+
     m:__loadLayers()
 
     return m
