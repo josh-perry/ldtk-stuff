@@ -16,6 +16,9 @@ function Map.new(mapFile)
         error("No map file: '"..mapFile.."' found!")
     end
 
+    m.maxWorldDepth = 0
+    m.minWorldDepth = 0
+
     local jsonData = json.decode(love.filesystem.read(mapFile))
     m.relativePath = mapFile:match("(.*[/\\])") or ""
     m:__loadTilesets(jsonData.defs.tilesets)
@@ -24,9 +27,11 @@ function Map.new(mapFile)
     return m
 end
 
-function Map:draw()
+function Map:draw(worldDepth)
     for _, v in ipairs(self.levels) do
-        v:draw()
+        if not worldDepth or v.worldDepth == worldDepth then
+            v:draw()
+        end
     end
 end
 
@@ -57,7 +62,11 @@ function Map:__loadLevels(levelsData)
     self.levels = self.levels or {}
 
     for _, v in ipairs(levelsData) do
-        table.insert(self.levels, Level(v, self))
+        local level = Level(v, self)
+        table.insert(self.levels, level)
+
+        self.maxWorldDepth = math.max(self.maxWorldDepth or 0, level.worldDepth)
+        self.minWorldDepth = math.min(self.minWorldDepth or 0, level.worldDepth)
     end
 end
 
