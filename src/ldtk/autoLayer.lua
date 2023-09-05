@@ -46,10 +46,10 @@ end
 function AutoLayer:__loadGridTiles()
     self.tiles = self.tiles or {}
 
-    for x = 1, self.tilesX + 1 do
+    for x = 0, self.tilesX + 1 do
         self.tiles[x] = {}
 
-        for y = 1, self.tilesY + 1 do
+        for y = 0, self.tilesY + 1 do
             self.tiles[x][y] = nil
         end
     end
