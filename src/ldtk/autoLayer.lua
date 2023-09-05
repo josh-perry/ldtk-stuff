@@ -21,12 +21,18 @@ function AutoLayer.new(layerData, map)
     m.tilesX = m.data.__cWid + 1
     m.tilesY = m.data.__cHei + 1
 
+    m.visible = m.data.visible
+
     m:__loadGridTiles()
 
     return m
 end
 
 function AutoLayer:draw(offsetX, offsetY)
+    if not self.visible then
+        return
+    end
+
     for x = 1, self.tilesX + 1 do
         for y = 1, self.tilesY + 1 do
             if self.tiles[x] and self.tiles[x][y] then
