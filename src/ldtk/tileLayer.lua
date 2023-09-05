@@ -48,6 +48,8 @@ function TileLayer:draw(layerOffsetX, layerOffsetY)
     for tileX = 1, self.tilesX + 1 do
         for tileY = 1, self.tilesY + 1 do
             if self.tiles[tileX] and self.tiles[tileX][tileY] then
+                love.graphics.setColor(1, 1, 1)
+
                 local tile = self.tiles[tileX][tileY]
                 local quad = self:__getQuad(tile)
 
@@ -71,10 +73,15 @@ function TileLayer:draw(layerOffsetX, layerOffsetY)
                         flipYOffset = self.gridSize
                         scaleX, scaleY = -1, -1
                     end
+
+                    if properties.a then
+                        love.graphics.setColor(1, 1, 1, properties.a)
+                    end
                 end
 
                 local x = ((tileX-1)*self.gridSize)+layerOffsetX
                 local y = ((tileY-1)*self.gridSize)+layerOffsetY
+
                 love.graphics.draw(self.tileset.image, quad, x, y, 0, scaleX, scaleY, flipXOffset, flipYOffset)
             end
         end
