@@ -1,5 +1,6 @@
 local PATH = (...):gsub("%.[^%.]+$", "")
-local json = require(PATH..".lib.json")
+
+local tileProperties = require(PATH..".tileProperties")
 
 local TileLayer = {}
 TileLayer.__mt = {
@@ -18,14 +19,14 @@ function TileLayer.new(layerData, map)
 
     m.type = layerData.__type
 
-    if m.type == "TileLayer" then
+    if m.type == "Tiles" then
         m.tileContainer = layerData.gridTiles
     elseif m.type == "AutoLayer" then
         m.tileContainer = layerData.autoLayerTiles
     elseif m.type == "IntGrid" then
         m.tileContainer = layerData.autoLayerTiles
     else
-        --error("Can't find tile container")
+        error("Can't find tile container")
     end
 
     m.tileset = m.map:getTilesetByUid(m.tilesetUid)
@@ -39,16 +40,42 @@ function TileLayer.new(layerData, map)
     return m
 end
 
-function TileLayer:draw(offsetX, offsetY)
+function TileLayer:draw(layerOffsetX, layerOffsetY)
     if not self.visible then
         return
     end
 
-    for x = 1, self.tilesX + 1 do
-        for y = 1, self.tilesY + 1 do
-            if self.tiles[x] and self.tiles[x][y] then
-                local quad = self:__getQuad(self.tiles[x][y])
-                love.graphics.draw(self.tileset.image, quad, ((x-1)*self.gridSize)+offsetX, ((y-1)*self.gridSize)+offsetY)
+    for tileX = 1, self.tilesX + 1 do
+        for tileY = 1, self.tilesY + 1 do
+            if self.tiles[tileX] and self.tiles[tileX][tileY] then
+                local tile = self.tiles[tileX][tileY]
+                local quad = self:__getQuad(tile)
+
+                local flipXOffset = 0
+                local flipYOffset = 0
+                local scaleX, scaleY = 1, 1
+
+                local properties = self.tileProperties[tile]
+
+                if properties then
+                    local flipBits = tileProperties.flipBits
+
+                    if properties.f == flipBits.flipX then
+                        flipXOffset = self.gridSize
+                        scaleX = -1
+                    elseif properties.f == flipBits.flipY then
+                        flipYOffset = self.gridSize
+                        scaleY = -1
+                    elseif properties.f == flipBits.flipXY then
+                        flipXOffset = self.gridSize
+                        flipYOffset = self.gridSize
+                        scaleX, scaleY = -1, -1
+                    end
+                end
+
+                local x = ((tileX-1)*self.gridSize)+layerOffsetX
+                local y = ((tileY-1)*self.gridSize)+layerOffsetY
+                love.graphics.draw(self.tileset.image, quad, x, y, 0, scaleX, scaleY, flipXOffset, flipYOffset)
             end
         end
     end
@@ -69,6 +96,8 @@ function TileLayer:__loadGridTiles()
         return
     end
 
+    self.tileProperties = {}
+
     for i, v in ipairs(self.tileContainer) do
         -- TODO: load the quad better
         local tile = {
@@ -80,6 +109,14 @@ function TileLayer:__loadGridTiles()
         local tileY = math.floor((v.px[2] / self.gridSize)) + 1
 
         self.tiles[tileX][tileY] = tile
+
+        -- if we have any properties differing from the default, store them
+        if v.a ~= 1 or v.f ~= tileProperties.flipBits.noFlip then
+            self.tileProperties[tile] = {
+                a = v.a,
+                f = v.f
+            }
+        end
     end
 end
 
